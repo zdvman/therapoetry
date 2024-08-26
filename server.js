@@ -12,6 +12,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { poemsCollectionDeleteCronJob } from "./src/tasks/poems_cron.js";
 
+const router = "portfolio/therapoetry";
+
 // Создаем __dirname и __filename
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,10 +70,7 @@ const anthropic = new Anthropic({
 // start the cron job to delete expired poems
 poemsCollectionDeleteCronJob.start();
 
-// Создаем экземпляр роутера
-const router = express.Router();
-
-app.post("/api/get-poem", async (req, res) => {
+app.post(`${router}/api/get-poem`, async (req, res) => {
   const { promptInput, poetryChoice, letters, ageGroup } = req.body;
   try {
     const msg = await anthropic.messages.create({
@@ -119,7 +118,7 @@ app.post("/api/get-poem", async (req, res) => {
 });
 
 // Маршрут для сохранения поэм
-app.post("/api/save-poems", async (req, res) => {
+app.post(`${router}/api/save-poems`, async (req, res) => {
   const { userName, poems } = req.body;
 
   if (!userName || !poems || !Array.isArray(poems) || poems.length === 0) {
@@ -147,7 +146,7 @@ app.post("/api/save-poems", async (req, res) => {
 });
 
 // Маршрут для отображения поэм пользователя
-app.get("/api/poems/:id", async (req, res) => {
+app.get(`${router}/api/poems/:id`, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -168,7 +167,7 @@ app.get("/api/poems/:id", async (req, res) => {
 });
 
 // Маршрут для генерации QR-кода
-app.get("/api/generate-qr/:id", async (req, res) => {
+app.get(`${router}/api/generate-qr/:id`, async (req, res) => {
   const { id } = req.params;
   const url = `${process.env.API_URL}/poems/${id}`;
 
@@ -181,12 +180,9 @@ app.get("/api/generate-qr/:id", async (req, res) => {
   }
 });
 
-app.use("/api/healthcheck", (req, res) => {
+app.use(`${router}/api/healthcheck`, (req, res) => {
   res.status(200).send("Server is running");
 });
-
-// Подключаем роутер с базовым путем
-app.use("/portfolio/therapoetry", router);
 
 // This should be the last route, to serve the frontend for any unmatched routes
 app.get("*", (req, res) => {
