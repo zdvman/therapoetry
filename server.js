@@ -23,8 +23,9 @@ const app = express(); // Инициализируем приложение Expr
 app.use(
   cors({
     origin: [
-      "http://13.43.38.254",
-      "http://stbot.dmytrozuiev.com",
+      "52.58.184.185",
+      "52.58.184.185/portfolio/therapoetry",
+      "http://dmytrozuiev.com/portfolio/therapoetry",
       "http://localhost:3000",
     ], // Для локальной разработки и продакшена
     methods: ["GET", "POST"],
@@ -66,6 +67,9 @@ const anthropic = new Anthropic({
 
 // start the cron job to delete expired poems
 poemsCollectionDeleteCronJob.start();
+
+// Создаем экземпляр роутера
+const router = express.Router();
 
 app.post("/api/get-poem", async (req, res) => {
   const { promptInput, poetryChoice, letters, ageGroup } = req.body;
@@ -180,6 +184,9 @@ app.get("/api/generate-qr/:id", async (req, res) => {
 app.use("/api/healthcheck", (req, res) => {
   res.status(200).send("Server is running");
 });
+
+// Подключаем роутер с базовым путем
+app.use("/portfolio/therapoetry", router);
 
 // This should be the last route, to serve the frontend for any unmatched routes
 app.get("*", (req, res) => {

@@ -3,6 +3,7 @@ import "./style.css"; // Подключаем стили
 
 // Определяем URL API
 const apiUrl = process.env.API_URL;
+console.log(apiUrl);
 
 let userNameInput = ""; // Переменная для хранения имени пользователя
 let currentAgeGroup = ""; // Переменная для хранения текущей возрастной группы
