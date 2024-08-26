@@ -2,7 +2,7 @@ import "./style.css"; // Подключаем стили
 // import QRCode from "qrcode";
 
 // Определяем URL API
-const apiUrl = process.env.API_URL;
+const apiUrl = process.env.API_URL || "http://localhost:3000";
 console.log(apiUrl);
 
 let userNameInput = ""; // Переменная для хранения имени пользователя

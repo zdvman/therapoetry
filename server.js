@@ -12,8 +12,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { poemsCollectionDeleteCronJob } from "./src/tasks/poems_cron.js";
 
-const router = "/portfolio/therapoetry";
-
 // Создаем __dirname и __filename
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +26,7 @@ app.use(
       "52.58.184.185",
       "52.58.184.185/portfolio/therapoetry",
       "http://dmytrozuiev.com/portfolio/therapoetry",
-      "http://localhost:3000",
+      "http://localhost:3000/portfolio/therapoetry",
     ], // Для локальной разработки и продакшена
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
@@ -69,6 +67,8 @@ const anthropic = new Anthropic({
 
 // start the cron job to delete expired poems
 poemsCollectionDeleteCronJob.start();
+
+const router = "/portfolio/therapoetry";
 
 app.post(`${router}/api/get-poem`, async (req, res) => {
   const { promptInput, poetryChoice, letters, ageGroup } = req.body;

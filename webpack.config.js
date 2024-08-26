@@ -1,3 +1,5 @@
+// webpack.config.js
+
 import path from "path";
 import { fileURLToPath } from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -34,7 +36,7 @@ export default {
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/portfolio/therapoetry",
+    publicPath: "/",
   },
   plugins: [
     new HtmlWebpackPlugin({
