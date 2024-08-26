@@ -12,7 +12,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { poemsCollectionDeleteCronJob } from "./src/tasks/poems_cron.js";
 
-const router = "portfolio/therapoetry";
+const router = "/portfolio/therapoetry";
 
 // Создаем __dirname и __filename
 const __filename = fileURLToPath(import.meta.url);
