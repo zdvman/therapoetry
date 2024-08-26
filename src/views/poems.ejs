@@ -1,0 +1,58 @@
+<!-- poems.ejs -->
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вірші для <%= userName %></title>
+    <link rel="stylesheet" href="/style-poems.css" />
+  </head>
+  <body>
+    <h1>Вірші для <%= userName %></h1>
+    <div>
+      <% poems.forEach(function(poem) { %>
+      <div class="poem-container">
+        <h2>Стиль: <%= poem.styleOfPoem %></h2>
+        <p>
+          <strong>Вік учня: <%= poem.ageGroup %></strong>
+        </p>
+        <p>
+          <strong>Літери: "<%= poem.letters %>"</strong>
+        </p>
+        <p>
+          <strong>Запит: "<%= poem.prompt %>"</strong>
+        </p>
+        <p><%- poem.poem.replace(/\n/g, '<br />') %></p>
+
+        <!-- Додаємо кнопки для соцмереж -->
+        <div class="share-buttons">
+          <!-- <a
+            href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-facebook"
+            >Поділитися на Facebook</a
+          > -->
+          <a
+            href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-twitter"
+            >Поділитися в Twitter</a
+          >
+          <a
+            href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-linkedin"
+            >Поділитися в LinkedIn</a
+          >
+          <a
+            href="mailto:?subject=Подивись на цей вірш&body=<%= encodeURIComponent('Подивись на цей вірш: ' + apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-email"
+            >Поділитися через Email</a
+          >
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Віршотерапія</title>
+  </head>
+  <body>
+    <div id="chatContainer">
+      <h1>Віршотерапія</h1>
+      <div id="nameSection">
+        <input type="text" id="userName" placeholder="Введіть ім'я учня" />
+        <button id="saveBtn">Зберегти ім'я</button>
+      </div>
+      <div id="poetrySection" style="display: none">
+        <h2 id="greeting"></h2>
+        <div class="poetry-form-row">
+          <label for="ageGroup">Оберіть вікову групу:</label>
+          <select id="ageGroup">
+            <option value="4-6">4-6 років</option>
+            <option value="7-9">7-9 років</option>
+            <option value="10-12">10-12 років</option>
+            <option value="13-15">13-15 років</option>
+            <option value="16-18">16-18 років</option>
+            <option value="adult">Дорослі</option>
+          </select>
+          <label for="poetryForm">Оберіть форму вірша:</label>
+          <select id="poetryForm">
+            <option value="limerick">Лімерик</option>
+            <option value="quatrain">Чотиривірш</option>
+            <option value="acrostic">Акровірш</option>
+            <option value="counting_rhyme">Дитяча лічилка</option>
+            <option value="riddle_poem">Віршована загадка</option>
+            <option value="tongue_twister">Скоромовка</option>
+          </select>
+          <span class="tooltip"
+            >?
+            <div class="tooltiptext">
+              Ось список поетичних форм, які є популярними, зручними для
+              генерації, добре римованими та легко запам'ятовуються дітьми:<br /><br />
+
+              <strong>1. Лімерик</strong><br />
+              Жартівливий п'ятирядковий вірш з римою AABBA, часто з ігровою або
+              дотепною темою. Ідеально підходить для дітей завдяки своєму гумору
+              та ритмічності.<br /><br />
+
+              <strong>2. Чотиривірш (Катрен)</strong><br />
+              Чотирирядковий вірш з різними схемами рими (ABAB, AABB або ABBA).
+              Простий і легкий для запам'ятовування, часто використовується в
+              дитячих віршах та піснях.<br /><br />
+
+              <strong>3. Акровірш</strong><br />
+              Вірш, де перші літери кожного рядка складають слово або послання.
+              Цікавий для дітей, оскільки додає елемент гри та загадки.<br /><br />
+
+              <strong>4. Дитяча лічилка</strong><br />
+              Коротка римована форма, часто з повторюваними звуками та ритмічним
+              малюнком. Легко запам'ятовується та часто використовується в
+              іграх.<br /><br />
+
+              <strong>5. Віршована загадка</strong><br />
+              Короткий римований вірш, який описує предмет або явище, не
+              називаючи його. Стимулює уяву та мислення дитини.<br /><br />
+
+              <strong>6. Скоромовка</strong><br />
+              Спеціально складений вірш або фраза з важкими для вимови
+              поєднаннями звуків. Ідеально підходить для практики вимови та
+              розвитку артикуляції.<br /><br />
+            </div>
+          </span>
+        </div>
+
+        <div class="alphabet-grid">
+          <div class="letter">А</div>
+          <div class="letter">Б</div>
+          <div class="letter">В</div>
+          <div class="letter">Г</div>
+          <div class="letter">Ґ</div>
+          <div class="letter">Д</div>
+          <div class="letter">Е</div>
+          <div class="letter">Є</div>
+          <div class="letter">Ж</div>
+          <div class="letter">З</div>
+          <div class="letter">И</div>
+          <div class="letter">І</div>
+          <div class="letter">Ї</div>
+          <div class="letter">Й</div>
+          <div class="letter">К</div>
+          <div class="letter">Л</div>
+          <div class="letter">М</div>
+          <div class="letter">Н</div>
+          <div class="letter">О</div>
+          <div class="letter">П</div>
+          <div class="letter">Р</div>
+          <div class="letter">С</div>
+          <div class="letter">Т</div>
+          <div class="letter">У</div>
+          <div class="letter">Ф</div>
+          <div class="letter">Х</div>
+          <div class="letter">Ц</div>
+          <div class="letter">Ч</div>
+          <div class="letter">Ш</div>
+          <div class="letter">Щ</div>
+          <div class="letter">Ь</div>
+          <div class="letter">Ю</div>
+          <div class="letter">Я</div>
+        </div>
+        <div class="poetry-form-container">
+          <input
+            type="text"
+            id="prompt"
+            placeholder="Введіть ваш текстовий запит..."
+          />
+          <button id="tellStory">Створити вірш!</button>
+          <p id="storyOutput"></p>
+          <button id="finishBtn">Завершити сеанс віршотерапії</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

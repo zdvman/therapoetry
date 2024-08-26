@@ -1,0 +1,246 @@
+/* General Styles */
+html,
+body {
+  height: auto; /* Убираем фиксированную высоту */
+  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Изменено с height на min-height */
+}
+
+h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Chat Container */
+#chatContainer {
+  background-color: #ffffff;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: none; /* Убедитесь, что высота не ограничена */
+}
+
+/* Form Sections */
+#nameSection,
+#poetrySection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: auto; /* Убедитесь, что высота динамическая */
+}
+
+/* Изначально скрытая секция */
+#poetrySection.hide {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  display: none;
+}
+
+#poetrySection.show {
+  opacity: 1;
+  display: block; /* Показываем секцию */
+}
+
+#nameSection.hide {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  display: none;
+}
+
+#nameSection.show {
+  opacity: 1;
+  display: block; /* Показываем секцию */
+}
+
+#userName,
+#prompt {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Buttons */
+#saveBtn,
+#tellStory,
+#finishBtn {
+  width: 100%; /* Ensure the buttons are 100% width */
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+#saveBtn:hover,
+#tellStory:hover,
+#finishBtn:hover {
+  background-color: #0056b3;
+}
+
+/* Output Area */
+#storyOutput {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  min-height: 50px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #333;
+  overflow-y: auto; /* Добавлено, чтобы обеспечить прокрутку длинного содержимого */
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: bold;
+  color: #3498db;
+  margin-left: 10px; /* Adds space between the tooltip and the select box */
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 300px; /* Или установите меньшую ширину, если нужно */
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: left;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.tooltiptext.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(10px); /* Смещение вниз для лучшей видимости */
+}
+
+/* Row container for label, select, and tooltip */
+.poetry-form-row {
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Poetry Form Container */
+.poetry-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px; /* Adds space below the form container */
+}
+
+#poetryForm,
+#ageGroup {
+  font-size: 1rem;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Alphabet Grid Styles (новый блок стилей) */
+.alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr); /* 10 колонок для алфавита */
+  grid-gap: 5px; /* Пространство между буквами */
+  margin: 10px 0; /* Добавлено пространство сверху и снизу */
+}
+
+.letter {
+  background-color: #e7e7e7;
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.letter:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+.letter.selected {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  #chatContainer {
+    width: 100%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  #tellStory,
+  #finishBtn {
+    font-size: 0.9rem;
+  }
+
+  #prompt {
+    font-size: 0.9rem;
+  }
+
+  #storyOutput {
+    font-size: 0.9rem;
+  }
+
+  /* Alphabet Grid Responsive (новый блок) */
+  .alphabet-grid {
+    grid-template-columns: repeat(
+      10,
+      1fr
+    ); /* Уменьшение колонок до 4 на маленьких экранах */
+  }
+
+  .letter {
+    font-size: 1rem; /* Уменьшение размера шрифта на маленьких экранах */
+    padding: 10px; /* Уменьшение отступов на маленьких экранах */
+  }
+}
