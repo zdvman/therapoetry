@@ -23,6 +23,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.3",
     "node-cron": "^3.0.3",
+    "pm2": "^5.4.2",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {

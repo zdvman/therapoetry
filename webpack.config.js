@@ -34,7 +34,7 @@ export default {
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
+    publicPath: "/portfolio/therapoetry",
   },
   plugins: [
     new HtmlWebpackPlugin({
