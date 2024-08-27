@@ -151,7 +151,7 @@ const isPreviousPoemEmpty = function () {
   return result;
 };
 
-tellStoryBtn?.addEventListener("click", async () => {
+tellStoryBtn.addEventListener("click", async () => {
   // Проверка на пустые значения селекторов и поля ввода
   if (isEmptySelectorsValues()) return;
 
