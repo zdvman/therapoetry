@@ -23,10 +23,10 @@ const app = express(); // Инициализируем приложение Expr
 app.use(
   cors({
     origin: [
-      "52.58.184.185",
-      "52.58.184.185/portfolio/therapoetry",
-      "http://dmytrozuiev.com/portfolio/therapoetry",
-      "http://localhost:3000/portfolio/therapoetry",
+      "http://52.58.184.185",
+      // "52.58.184.185/portfolio/therapoetry",
+      // "http://dmytrozuiev.com/portfolio/therapoetry",
+      "http://localhost:3000",
     ], // Для локальной разработки и продакшена
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
@@ -68,9 +68,7 @@ const anthropic = new Anthropic({
 // start the cron job to delete expired poems
 poemsCollectionDeleteCronJob.start();
 
-const router = "/portfolio/therapoetry";
-
-app.post(`${router}/api/get-poem`, async (req, res) => {
+app.post(`/api/get-poem`, async (req, res) => {
   console.log("i'm here");
   const { promptInput, poetryChoice, letters, ageGroup } = req.body;
   try {
@@ -119,7 +117,7 @@ app.post(`${router}/api/get-poem`, async (req, res) => {
 });
 
 // Маршрут для сохранения поэм
-app.post(`${router}/api/save-poems`, async (req, res) => {
+app.post(`/api/save-poems`, async (req, res) => {
   const { userName, poems } = req.body;
 
   if (!userName || !poems || !Array.isArray(poems) || poems.length === 0) {
@@ -147,7 +145,7 @@ app.post(`${router}/api/save-poems`, async (req, res) => {
 });
 
 // Маршрут для отображения поэм пользователя
-app.get(`${router}/api/poems/:id`, async (req, res) => {
+app.get(`/api/poems/:id`, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -168,7 +166,7 @@ app.get(`${router}/api/poems/:id`, async (req, res) => {
 });
 
 // Маршрут для генерации QR-кода
-app.get(`${router}/api/generate-qr/:id`, async (req, res) => {
+app.get(`/api/generate-qr/:id`, async (req, res) => {
   const { id } = req.params;
   const url = `${process.env.API_URL}/poems/${id}`;
 
@@ -181,7 +179,7 @@ app.get(`${router}/api/generate-qr/:id`, async (req, res) => {
   }
 });
 
-app.use(`${router}/api/healthcheck`, (req, res) => {
+app.use(`/api/healthcheck`, (req, res) => {
   res.status(200).send("Server is running");
 });
 
