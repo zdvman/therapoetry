@@ -184,9 +184,9 @@ app.use(`/api/healthcheck`, (req, res) => {
 });
 
 // This should be the last route, to serve the frontend for any unmatched routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "dist", "index.html"));
+// });
 
 const port = process.env.PORT || 3000; // Устанавливаем порт из переменной окружения PORT или 3000 по умолчанию
 app.listen(port, () => {
