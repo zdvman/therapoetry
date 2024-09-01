@@ -24,6 +24,7 @@ app.use(
   cors({
     origin: [
       "http://52.58.184.185",
+      "https://52.58.184.185",
       "https://therapoetry.dmytrozuiev.com",
       "http://therapoetry.dmytrozuiev.com",
       "https://localhost:3000",
