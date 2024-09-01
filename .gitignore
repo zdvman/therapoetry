@@ -6,3 +6,4 @@ node_modules
 README.md
 LICENSE
 prompt-example.jpg
+*.pem

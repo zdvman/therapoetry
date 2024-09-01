@@ -24,11 +24,11 @@ app.use(
   cors({
     origin: [
       "http://52.58.184.185",
-      // "52.58.184.185/portfolio/therapoetry",
-      // "http://dmytrozuiev.com/portfolio/therapoetry",
-      "http://localhost:3000",
+      "https://therapoetry.dmytrozuiev.com",
+      "http://therapoetry.dmytrozuiev.com",
+      "https://localhost:3000",
     ], // Для локальной разработки и продакшена
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "USE"],
     allowedHeaders: ["Content-Type"],
   })
 );
