@@ -25,8 +25,8 @@ app.use(
     origin: [
       "http://3.69.178.249",
       "https://3.69.178.249",
-      "https://dmytrozuiev.com",
-      "http://dmytrozuiev.com",
+      "https://therapoetry.dmytrozuiev.com",
+      "http://therapoetry.dmytrozuiev.com",
       "https://localhost:3000",
     ], // Для локальной разработки и продакшена
     methods: ["GET", "POST", "USE"],
