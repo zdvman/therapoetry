@@ -169,7 +169,7 @@ app.get(`/api/poems/:id`, async (req, res) => {
 // Маршрут для генерации QR-кода
 app.get(`/api/generate-qr/:id`, async (req, res) => {
   const { id } = req.params;
-  const url = `${process.env.API_URL}/poems/${id}`;
+  const url = `${process.env.API_URL}/api/poems/${id}`;
 
   try {
     const qrCode = await QRCode.toDataURL(`${url}`);
