@@ -9,7 +9,7 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #f5f5f5;
   margin: 0;
-  padding: 0;
+  padding: 20;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,10 +30,12 @@ h1 {
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 20px;
+  margin: 20px;
   width: 90%;
   max-width: 600px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   gap: 1rem;
   max-height: none; /* Убедитесь, что высота не ограничена */
 }
@@ -41,9 +43,12 @@ h1 {
 /* Form Sections */
 #nameSection,
 #poetrySection {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
+  /* padding: 10px; */
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   height: auto; /* Убедитесь, что высота динамическая */
 }
 
@@ -78,6 +83,10 @@ h1 {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
+  /* margin: 20px; */
+  /* margin-top: 10px; */
+  /* margin-left: 10px; Добавлен внешний отступ слева */
+  /* margin-right: 10px; Добавлен внешний отступ справа */
 }
 
 /* Buttons */
@@ -85,6 +94,7 @@ h1 {
 #tellStory,
 #finishBtn {
   width: 100%; /* Ensure the buttons are 100% width */
+  box-sizing: border-box;
   padding: 12px;
   background-color: #007bff;
   color: white;
@@ -93,7 +103,9 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 10px;
+  /* margin: 20px; */
+  /* margin-left: 10px; */
+  /* margin-right: 10px; */
 }
 
 #saveBtn:hover,
@@ -127,35 +139,39 @@ h1 {
 
 .tooltiptext {
   visibility: hidden;
-  width: 300px; /* Или установите меньшую ширину, если нужно */
+  width: 50%; /* Или установите меньшую ширину, если нужно */
   background-color: #f9f9f9;
   color: #333;
   text-align: left;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ddd;
-  position: absolute;
-  z-index: 1;
-  top: 100%;
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
   font-size: 14px;
   font-weight: normal;
   font-style: italic;
+  white-space: normal; /* Чтобы текст переносился */
+  /* max-width: 100%;
+  box-sizing: border-box; */
 }
 
 .tooltiptext.show {
   visibility: visible;
   opacity: 1;
-  transform: translateX(-50%) translateY(10px); /* Смещение вниз для лучшей видимости */
+  transform: translate(-50%, -50%);
 }
 
 /* Row container for label, select, and tooltip */
 .poetry-form-row {
   padding-bottom: 10px;
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
 }
@@ -165,7 +181,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 20px; /* Adds space below the form container */
+  /* margin-bottom: 20px; Adds space below the form container */
 }
 
 #poetryForm,
@@ -211,7 +227,18 @@ h1 {
 @media (max-width: 600px) {
   #chatContainer {
     width: 100%;
-    padding: 20px;
+    padding: 10px;
+    margin: 10px;
+  }
+
+  #nameSection,
+  #poetrySection {
+    gap: 10px;
+  }
+
+  .tooltiptext {
+    width: 60%; /* Уменьшаем ширину для маленьких экранов */
+    font-size: 12px;
   }
 
   h1 {
@@ -234,13 +261,18 @@ h1 {
   /* Alphabet Grid Responsive (новый блок) */
   .alphabet-grid {
     grid-template-columns: repeat(
-      10,
+      7,
       1fr
-    ); /* Уменьшение колонок до 4 на маленьких экранах */
+    ); /* Уменьшение колонок на маленьких экранах */
   }
 
   .letter {
     font-size: 1rem; /* Уменьшение размера шрифта на маленьких экранах */
     padding: 10px; /* Уменьшение отступов на маленьких экранах */
+  }
+
+  .poetry-form-row {
+    flex-direction: column; /* Элементы располагаются в столбец */
+    align-items: stretch; /* Растягивание элементов на всю ширину контейнера */
   }
 }

@@ -27,7 +27,7 @@ app.use(
       "https://3.69.178.249",
       "https://therapoetry.dmytrozuiev.com",
       "http://therapoetry.dmytrozuiev.com",
-      "https://localhost:3000",
+      "http://localhost:3000",
     ], // Для локальной разработки и продакшена
     methods: ["GET", "POST", "USE"],
     allowedHeaders: ["Content-Type"],
