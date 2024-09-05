@@ -30,41 +30,86 @@ const storyOutput = document.getElementById("storyOutput");
 const tellStoryBtn = document.getElementById("tellStory");
 const finishBtn = document.getElementById("finishBtn");
 
+// Функция для создания затемнения фона
+const overlayBackground = function () {
+  // Создаем затемнение фона
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  overlay.style.zIndex = "999"; // Ниже, чем popup, но выше остальных элементов
+  overlay.style.backdropFilter = "blur(5px)"; // Размытие заднего фона
+
+  return overlay;
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const tooltip = document.querySelector(".tooltip");
   const tooltipText = tooltip.querySelector(".tooltiptext");
+  const overlay = overlayBackground();
 
+  // Открываем окно при клике на иконку
   tooltip.addEventListener("click", (event) => {
+    document.body.appendChild(overlay);
     tooltipText.classList.toggle("show"); // Переключаем видимость окна
     event.stopPropagation(); // Останавливаем распространение события клика
   });
 
-  // Закрываем окно при клике вне его и прокручиваем страницу вверх
+  // Предотвращаем закрытие при клике на сам попап
+  tooltipText.addEventListener("click", (event) => {
+    event.stopPropagation(); // Останавливаем распространение события клика
+  });
+
+  // Закрываем окно при клике вне его
   document.addEventListener("click", (event) => {
-    if (!tooltip.contains(event.target)) {
+    if (
+      !tooltipText.contains(event.target) &&
+      !tooltip.contains(event.target)
+    ) {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
       tooltipText.classList.remove("show");
     }
   });
 
   // Альтернативный метод с focusout
-  tooltip.addEventListener("focusout", () => {
+  tooltipText.addEventListener("focusout", () => {
+    if (document.body.contains(overlay)) {
+      document.body.removeChild(overlay);
+    }
     tooltipText.classList.remove("show");
   });
 });
 
 lettersGrid.forEach((letter) => {
+  // Используем touchstart для сенсорных устройств
+  letter.addEventListener("touchstart", function (event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение
+    handleLetterSelection(this);
+  });
+
+  // Также оставляем обработку для click на десктопе
   letter.addEventListener("click", function () {
-    const letterValue = this.textContent;
+    handleLetterSelection(this);
+  });
+
+  // Функция для обработки выбора/снятия выделения с буквы
+  function handleLetterSelection(letterElement) {
+    const letterValue = letterElement.textContent;
 
     // Проверка, выбрана ли буква уже
-    if (this.classList.contains("selected")) {
-      this.classList.remove("selected");
+    if (letterElement.classList.contains("selected")) {
+      letterElement.classList.remove("selected");
       selectedLetters = selectedLetters.filter((l) => l !== letterValue);
     } else {
-      this.classList.add("selected");
+      letterElement.classList.add("selected");
       selectedLetters.push(letterValue);
     }
-  });
+  }
 });
 
 selectedLettersString = selectedLetters.join(", ");
@@ -74,24 +119,15 @@ saveBtn.addEventListener("click", () => {
   userNameInput = userName.value; // Сохраняем введенное имя пользователя
 
   if (userNameInput) {
-    // Плавное скрытие секции nameSection
-    nameSection.classList.remove("show");
-    nameSection.classList.add("hide");
-    poetryForm.value = ""; // Сброс значения формы
-    ageGroupSelect.value = ""; // Сброс значения селектора
+    nameSection.style.display = "none";
+    poetrySection.style.display = "flex";
 
-    setTimeout(() => {
-      nameSection.style.display = "none"; // Полностью скрываем секцию после завершения анимации
-      nameSection.classList.remove("hide");
+    // Обновление приветствия с введенным именем
+    greeting.innerHTML = `Привіт, ${userNameInput},<br>Розкажи свою історію 👂... <br>і я перетворю її на вірш.`;
 
-      // Плавное отображение секции poetrySection
-      poetrySection.style.display = "block";
-      setTimeout(() => {
-        poetrySection.classList.add("show"); // Активируем анимацию для показа
-      }, 10); // Небольшая задержка для корректного применения display: block
-
-      greeting.innerHTML = `Привіт, ${userNameInput},<br>Розкажи свою історію 👂... <br>і я перетворю її на вірш.`;
-    }, 500); // Время задержки должно совпадать с длительностью анимации (0.5s в CSS)
+    // Сброс значений формы и селектора
+    poetryForm.value = "";
+    ageGroupSelect.value = "";
   }
 });
 
@@ -270,6 +306,11 @@ finishBtn?.addEventListener("click", async () => {
       const qrCodeData = await qrCodeResponse.json();
 
       if (qrCodeData.qrCode) {
+        // Создаем затемнение фона
+        const overlay = overlayBackground();
+        // Добавляем затемнение фона перед popup
+        document.body.appendChild(overlay);
+
         // Создаем элемент всплывающего окна
         const popup = document.createElement("div");
         popup.style.position = "fixed";
@@ -298,38 +339,29 @@ finishBtn?.addEventListener("click", async () => {
         document.body.appendChild(popup);
         document.getElementById("closePopup").addEventListener("click", () => {
           document.body.removeChild(popup);
+          if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay); // Удаляем затемнение фона
+          }
+
+          poetrySection.style.display = "none";
+          nameSection.style.display = "flex";
+
+          // Очистка массива после успешного сохранения
+          poemArray = [];
+          userNameInput = "";
+          // Сброс значений
+          userName.value = "";
+          prompt.value = "";
+          storyOutput.innerText = "";
+          poetryForm.value = "";
+          ageGroupSelect.value = "";
+          lettersGrid.forEach((letter) => {
+            letter.classList.remove("selected");
+          });
         });
       }
-      // Очистка массива после успешного сохранения
-      poemArray = [];
-      userNameInput = "";
     } catch (error) {
       console.error("Error:", error);
     }
   }
-
-  // Плавное скрытие секции poetrySection
-  poetrySection.classList.remove("show");
-  poetrySection.classList.add("hide");
-
-  setTimeout(() => {
-    poetrySection.style.display = "none"; // Полностью скрываем секцию после завершения анимации
-    poetrySection.classList.remove("hide");
-
-    // Плавное отображение секции nameSection
-    nameSection.style.display = "block";
-    setTimeout(() => {
-      nameSection.classList.add("show"); // Активируем анимацию для показа
-    }, 10); // Небольшая задержка для корректного применения display: block
-
-    // Сброс значений
-    userName.value = "";
-    prompt.value = "";
-    storyOutput.innerText = "";
-    poetryForm.value = "";
-    ageGroupSelect.value = "";
-    lettersGrid.forEach((letter) => {
-      letter.classList.remove("selected");
-    });
-  }, 500); // Время задержки должно совпадать с длительностью анимации (0.5s в CSS)
 });

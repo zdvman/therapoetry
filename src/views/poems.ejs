@@ -14,13 +14,9 @@
       <div class="poem-container">
         <h2>Стиль: <%= poem.styleOfPoem %></h2>
         <p>
-          <strong>Вік учня: <%= poem.ageGroup %></strong>
-        </p>
-        <p>
-          <strong>Літери: "<%= poem.letters %>"</strong>
-        </p>
-        <p>
-          <strong>Запит: "<%= poem.prompt %>"</strong>
+          <strong>Вік учня:</strong> <%= poem.ageGroup %><br />
+          <strong>Літери:</strong> "<%= poem.letters %>"<br />
+          <strong>Запит:</strong> "<%= poem.prompt %>"<br />
         </p>
         <p><%- poem.poem.replace(/\n/g, '<br />') %></p>
 

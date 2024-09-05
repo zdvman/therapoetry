@@ -70,7 +70,6 @@ const anthropic = new Anthropic({
 poemsCollectionDeleteCronJob.start();
 
 app.post(`/api/get-poem`, async (req, res) => {
-  console.log("i'm here");
   const { promptInput, poetryChoice, letters, ageGroup } = req.body;
   try {
     const msg = await anthropic.messages.create({

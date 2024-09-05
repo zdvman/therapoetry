@@ -9,7 +9,6 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #f5f5f5;
   margin: 0;
-  padding: 20;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,40 +39,26 @@ h1 {
   max-height: none; /* Убедитесь, что высота не ограничена */
 }
 
-/* Form Sections */
 #nameSection,
 #poetrySection {
   width: 100%;
   box-sizing: border-box;
   display: flex;
-  /* padding: 10px; */
   flex-direction: column;
-  gap: 20px;
-  height: auto; /* Убедитесь, что высота динамическая */
+  gap: 1rem;
+  height: auto;
 }
 
-/* Изначально скрытая секция */
-#poetrySection.hide {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-  display: none;
-}
-
+/* Появление секции
+#nameSection.show,
 #poetrySection.show {
-  opacity: 1;
-  display: block; /* Показываем секцию */
+  display: flex;
 }
 
-#nameSection.hide {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+#nameSection.hide,
+#poetrySection.hide {
   display: none;
-}
-
-#nameSection.show {
-  opacity: 1;
-  display: block; /* Показываем секцию */
-}
+} */
 
 #userName,
 #prompt {
@@ -83,10 +68,6 @@ h1 {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
-  /* margin: 20px; */
-  /* margin-top: 10px; */
-  /* margin-left: 10px; Добавлен внешний отступ слева */
-  /* margin-right: 10px; Добавлен внешний отступ справа */
 }
 
 /* Buttons */
@@ -103,9 +84,6 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  /* margin: 20px; */
-  /* margin-left: 10px; */
-  /* margin-right: 10px; */
 }
 
 #saveBtn:hover,
@@ -139,7 +117,7 @@ h1 {
 
 .tooltiptext {
   visibility: hidden;
-  width: 50%; /* Или установите меньшую ширину, если нужно */
+  width: 400px; /* Или установите меньшую ширину, если нужно */
   background-color: #f9f9f9;
   color: #333;
   text-align: left;
@@ -157,8 +135,6 @@ h1 {
   font-weight: normal;
   font-style: italic;
   white-space: normal; /* Чтобы текст переносился */
-  /* max-width: 100%;
-  box-sizing: border-box; */
 }
 
 .tooltiptext.show {
@@ -181,7 +157,6 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* margin-bottom: 20px; Adds space below the form container */
 }
 
 #poetryForm,
@@ -238,7 +213,7 @@ h1 {
 
   .tooltiptext {
     width: 60%; /* Уменьшаем ширину для маленьких экранов */
-    font-size: 12px;
+    font-size: 0.9rem;
   }
 
   h1 {
