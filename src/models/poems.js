@@ -20,6 +20,7 @@ const poemSchema = new mongoose.Schema({
   },
   poems: [
     {
+      language: { type: String, required: true },
       styleOfPoem: { type: String, required: true },
       prompt: { type: String, required: true },
       poem: { type: String, required: true },

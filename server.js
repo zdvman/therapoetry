@@ -11,6 +11,7 @@ import ejs from "ejs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { poemsCollectionDeleteCronJob } from "./src/tasks/poems_cron.js";
+import cookieParser from "cookie-parser";
 
 // Создаем __dirname и __filename
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,16 @@ app.use(
 );
 
 app.use(express.json()); // Включаем JSON-парсинг для входящих запросов
+
+// Use cookie parser middleware
+app.use(cookieParser());
+
+// Middleware to set the selected language based on the cookie
+app.use((req, res, next) => {
+  const selectedLanguage = req.cookies.appLanguage || "en"; // Default to 'uk' if not set
+  req.selectedLanguage = selectedLanguage; // Store in request object for further use
+  next();
+});
 
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, "dist")));
@@ -69,27 +80,152 @@ const anthropic = new Anthropic({
 // start the cron job to delete expired poems
 poemsCollectionDeleteCronJob.start();
 
+const appLanguage = function (language) {
+  switch (language) {
+    case "en":
+      return "English";
+    case "es":
+      return "Spanish";
+    case "fr":
+      return "French";
+    case "de":
+      return "German";
+    case "it":
+      return "Italian";
+    case "pt":
+      return "Portuguese";
+    case "ru":
+      return "Russian";
+    case "uk":
+      return "Ukrainian";
+    case "zh":
+      return "Chinese";
+    case "ja":
+      return "Japanese";
+    case "ko":
+      return "Korean";
+    case "ar":
+      return "Arabic";
+    case "hi":
+      return "Hindi";
+    case "bn":
+      return "Bengali";
+    case "pa":
+      return "Punjabi";
+    case "te":
+      return "Telugu";
+    case "mr":
+      return "Marathi";
+    case "ta":
+      return "Tamil";
+    case "ur":
+      return "Urdu";
+    case "gu":
+      return "Gujarati";
+    case "kn":
+      return "Kannada";
+    case "or":
+      return "Odia";
+    case "ml":
+      return "Malayalam";
+    case "vi":
+      return "Vietnamese";
+    case "th":
+      return "Thai";
+    case "ms":
+      return "Malay";
+    case "id":
+      return "Indonesian";
+    case "tl":
+      return "Filipino";
+    case "tr":
+      return "Turkish";
+    case "fa":
+      return "Persian";
+    case "he":
+      return "Hebrew";
+    case "el":
+      return "Greek";
+    case "bg":
+      return "Bulgarian";
+    case "cs":
+      return "Czech";
+    case "da":
+      return "Danish";
+    case "nl":
+      return "Dutch";
+    case "fi":
+      return "Finnish";
+    case "hu":
+      return "Hungarian";
+    case "ga":
+      return "Irish";
+    case "lt":
+      return "Lithuanian";
+    case "lv":
+      return "Latvian";
+    case "mt":
+      return "Maltese";
+    case "pl":
+      return "Polish";
+    case "ro":
+      return "Romanian";
+    case "sk":
+      return "Slovak";
+    case "sl":
+      return "Slovenian";
+    case "sv":
+      return "Swedish";
+    case "hr":
+      return "Croatian";
+    case "et":
+      return "Estonian";
+    case "is":
+      return "Icelandic";
+    case "mk":
+      return "Macedonian";
+    case "no":
+      return "Norwegian";
+    case "sq":
+      return "Albanian";
+    case "sr":
+      return "Serbian";
+    default:
+      return "English";
+  }
+};
+
+// Example: Route for setting language via POST request
+// app.post("/api/set-language", (req, res) => {
+//   const { language } = req.body;
+//   res.cookie("appLanguage", language, { path: "/", maxAge: 900000 }); // Set the language in a cookie
+//   res.status(200).json({ message: "Language updated" });
+// });
+
 app.post(`/api/get-poem`, async (req, res) => {
-  const { promptInput, poetryChoice, letters, ageGroup } = req.body;
+  const { language, promptInput, poetryChoice, letters, ageGroup } = req.body;
+  const appCurrentLanguage = appLanguage(language);
   try {
     const msg = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20240620",
       max_tokens: 1000,
       temperature: 0,
-      system: `You are a poet specializing in creating therapeutic poems for children with speech difficulties. Your task is to compose a poem that helps children aged ${ageGroup} years practice the pronunciation of specific sounds. The poem should be written in the ${poetryChoice} style, with an emphasis on incorporating the following letters: ${letters}. The poem should be engaging, age-appropriate, and easy to memorize, ensuring that it supports the child's speech therapy.
+      system: `You are a poet specializing in creating therapeutic poems for individuals with speech difficulties. Depending on the age group (${ageGroup}), your task is to compose a poem that helps either children (if young) or adults (if older) practice pronunciation of specific sounds. The poem should be in the ${poetryChoice} style, incorporating the following letters: ${letters}. It must be engaging, age-appropriate, or suitable for adults, and easy to memorize, supporting their speech therapy goals.
 
-        Language Instructions:
-        - The poem must be generated in Ukrainian.
+      - The poem and its output, including any headings, should **not** include Markdown syntax (e.g., no hash symbols for headings or other special formatting symbols).
+      - Both the headings and the content should be generated in ${appCurrentLanguage}.
 
-        Here are your specific instructions:
-        1. Focus on Pronunciation: The poem must include the letters ${letters} multiple times, ensuring that these sounds are prominently featured throughout the poem. This will help the child practice and improve their pronunciation of these particular sounds.
-        2. Age Appropriateness: The content, language, and themes of the poem must be suitable for a child aged ${ageGroup}. The language should be simple yet engaging, and the poem should be enjoyable for the child to listen to and recite.
-        3. Structure and Style: The poem should strictly follow the ${poetryChoice} style. Ensure that the structure, rhyme scheme, and rhythm are consistent with the chosen form. The poem should be concise, ideally consisting of 8-12 lines (2-3 quatrains), making it easy for the child to memorize and repeat.
-        4. Use of Theme: Incorporate the following theme or story as the basis of the poem: "${promptInput}". The theme should be used creatively to weave in the chosen sounds and make the poem meaningful and engaging for the child.
-
-        Present the result in the following format:
-        1. Створений вірш
-        2. Короткий опис: Включіть коротке пояснення того, як вірш включає конкретні звуки і як його можна використовувати в мовленнєвій терапії.`,
+      Specific instructions:
+      1. **Focus on Pronunciation**: The poem must prominently feature the letters ${letters}, ensuring these sounds appear frequently throughout the poem to help the child practice pronunciation.
+      2. **Age Appropriateness**: Ensure the poem is suitable for a child aged ${ageGroup}, using simple yet engaging language. The poem should be fun for the child to listen to and recite.
+      3. **Structure and Style**: Adhere strictly to the ${poetryChoice} style, ensuring the structure, rhyme scheme, and rhythm match the chosen form. The poem should be concise, ideally consisting of 8-12 lines (2-3 quatrains), making it easy to memorize.
+      4. **Incorporating Theme**: Use the following theme/story as the foundation for the poem: "${promptInput}". Weave in the selected sounds (${letters}) to align the theme with the therapeutic goal.
+      5. **Therapeutic Benefit**: The poem should be designed to help children aged ${ageGroup} years practice pronunciation of specific sounds, making it an effective tool for speech therapy.
+      
+      ### Output Format (no Markdown, bold text, or special formatting):
+      1. The heading for the "Created Poem" and the "Short Description" should be generated in ${appCurrentLanguage}.
+      2. Created Poem: Present the poem in ${poetryChoice} style in ${appCurrentLanguage}, with a focus on the letters ${letters}.
+      3. Short Description: Provide a brief explanation of how the poem incorporates the specific sounds and how it can be used in speech therapy, focusing on its therapeutic benefit for children aged ${ageGroup} years.`,
       messages: [
         {
           role: "user",
@@ -128,6 +264,7 @@ app.post(`/api/save-poems`, async (req, res) => {
     const newPoemEntry = new Poems({
       userName,
       poems: poems.map((poem) => ({
+        language: poem.language,
         styleOfPoem: poem.style,
         prompt: poem.prompt,
         poem: poem.text,
@@ -147,6 +284,7 @@ app.post(`/api/save-poems`, async (req, res) => {
 // Маршрут для отображения поэм пользователя
 app.get(`/api/poems/:id`, async (req, res) => {
   const { id } = req.params;
+  const selectedLanguage = req.selectedLanguage; // Get the selected language from the request object
 
   try {
     const poemEntry = await Poems.findById(id);
@@ -154,10 +292,18 @@ app.get(`/api/poems/:id`, async (req, res) => {
       return res.status(404).send("No poems found for this user.");
     }
 
+    const translations = await import(
+      `./dist/translations/${selectedLanguage}.json`,
+      {
+        assert: { type: "json" },
+      }
+    ).then((module) => module.default);
+
     res.render("poems", {
       userName: poemEntry.userName,
       poems: poemEntry.poems,
-      apiUrl: process.env.API_URL, // Передача переменной API_URL в шаблон
+      apiUrl: process.env.API_URL, // Pass the API URL to the view
+      translations, // Pass the translations to the view for rendering
     });
   } catch (error) {
     console.error("Error fetching poems:", error);

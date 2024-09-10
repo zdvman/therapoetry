@@ -1,4 +1,4 @@
-<!-- poems.ejs -->
+<!-- poems.ejs
 <!DOCTYPE html>
 <html lang="uk">
   <head>
@@ -21,14 +21,14 @@
         <p><%- poem.poem.replace(/\n/g, '<br />') %></p>
 
         <!-- Додаємо кнопки для соцмереж -->
-        <div class="share-buttons">
-          <!-- <a
+<!-- <div class="share-buttons"> -->
+<!-- <a
             href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
             target="_blank"
             class="share-facebook"
             >Поділитися на Facebook</a
           > -->
-          <a
+<!-- <a
             href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
             target="_blank"
             class="share-twitter"
@@ -46,6 +46,57 @@
             class="share-email"
             >Поділитися через Email</a
           >
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="<%= translations.languageCode %>">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= translations.poemsFor %> <%= userName %></title>
+    <link rel="stylesheet" href="/style-poems.css" />
+  </head>
+  <body>
+    <h1><%= translations.poemsFor %> <%= userName %></h1>
+    <div>
+      <% poems.forEach(function(poem) { %>
+      <div class="poem-container">
+        <h2><%= translations.poemStyle %>: <%= poem.styleOfPoem %></h2>
+        <p>
+          <strong><%= translations.ageGroup %>:</strong> <%= poem.ageGroup %><br />
+          <strong><%= translations.letters %>:</strong> "<%= poem.letters %>"<br />
+          <strong><%= translations.prompt %>:</strong> "<%= poem.prompt %>"<br />
+        </p>
+        <p><%- poem.poem.replace(/\n/g, '<br />') %></p>
+
+        <!-- Social Share Buttons -->
+        <div class="share-buttons">
+          <a
+            href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-twitter"
+          >
+            <%= translations.shareTwitter %><br />
+          </a>
+          <a
+            href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-linkedin"
+          >
+            <%= translations.shareLinkedIn %><br />
+          </a>
+          <a
+            href="mailto:?subject=<%= translations.shareEmailSubject %>&body=<%= encodeURIComponent(translations.shareEmailBody + ' ' + apiUrl + '/poems/' + poem._id) %>"
+            target="_blank"
+            class="share-email"
+          >
+            <%= translations.shareEmail %><br />
+          </a>
         </div>
       </div>
       <% }); %>

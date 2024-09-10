@@ -7,7 +7,19 @@
   </head>
   <body>
     <div id="chatContainer">
-      <h1>Віршотерапія</h1>
+      <div id="headerSection">
+        <!-- Селектор для выбора языка -->
+        <div id="languageSwitch">
+          <!-- <label for="languageSelector">Мова:</label> -->
+          <select id="languageSelector">
+            <option value="uk">Українська</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <h1 id="appTitle">Віршотерапія</h1>
+      </div>
+
       <div id="nameSection">
         <input type="text" id="userName" placeholder="Введіть ім'я учня" />
         <button id="saveBtn">Зберегти ім'я</button>
@@ -70,8 +82,9 @@
           </span>
         </div>
 
+        <!-- Алфавит -->
         <div class="alphabet-grid">
-          <div class="letter">А</div>
+          <!-- <div class="letter">А</div>
           <div class="letter">Б</div>
           <div class="letter">В</div>
           <div class="letter">Г</div>
@@ -103,8 +116,10 @@
           <div class="letter">Щ</div>
           <div class="letter">Ь</div>
           <div class="letter">Ю</div>
-          <div class="letter">Я</div>
+          <div class="letter">Я</div> -->
         </div>
+
+        <!-- Контейнер для ввода запроса и генерации поэмы -->
         <div class="poetry-form-container">
           <input
             type="text"

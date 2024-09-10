@@ -1,3 +1,4 @@
+import { set } from "mongoose";
 import "./style.css"; // Подключаем стили
 // import QRCode from "qrcode";
 
@@ -5,6 +6,8 @@ import "./style.css"; // Подключаем стили
 const apiUrl = process.env.API_URL || "http://localhost:3000";
 console.log(apiUrl);
 
+let translations = {}; // Объект для хранения переводов
+let appLanguage = "en"; // Язык приложения по умолчанию "en"
 let userNameInput = ""; // Переменная для хранения имени пользователя
 let currentAgeGroup = ""; // Переменная для хранения текущей возрастной группы
 let currentPrompt = ""; // Переменная для хранения текущего промпта
@@ -16,6 +19,7 @@ let selectedLetters = []; // Массив для хранения выбранн
 let selectedLettersString = ""; // Строка для хранения выбранных букв
 
 // Получаем ссылки на элементы DOM
+const appTitle = document.getElementById("appTitle");
 const nameSection = document.getElementById("nameSection");
 const userName = document.getElementById("userName");
 const saveBtn = document.getElementById("saveBtn");
@@ -24,11 +28,168 @@ const greeting = document.getElementById("greeting");
 const ageGroupSelect = document.getElementById("ageGroup");
 const lettersGrid = document.querySelectorAll(".alphabet-grid .letter");
 const poetryForm = document.getElementById("poetryForm");
-const poetryFormContainer = document.querySelector(".poetry-form-container");
 const prompt = document.getElementById("prompt");
 const storyOutput = document.getElementById("storyOutput");
 const tellStoryBtn = document.getElementById("tellStory");
 const finishBtn = document.getElementById("finishBtn");
+const tooltipText = document.querySelector(".tooltiptext");
+
+// Function to load translations
+async function loadTranslations(language) {
+  try {
+    const response = await fetch(`./translations/${language}.json`);
+
+    // Check if the server response was successful
+    if (!response.ok) {
+      throw new Error(
+        `Loading error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    // Parse the JSON only if the response is successful
+    translations = await response.json();
+
+    console.log("translations:", translations);
+
+    // Update the text content based on the translation
+    updateTextContent();
+    updateAlphabet();
+  } catch (error) {
+    // Log the error to the console for easier debugging
+    console.error("Error while loading translations:", error);
+
+    // Display an error message to the user
+    alert(
+      "Failed to load translations. Please check your internet connection and try again."
+    );
+  }
+}
+
+// Функция для обновления текстового контента
+function updateTextContent() {
+  appTitle.textContent = translations.appTitle;
+  userName.placeholder = translations.namePlaceholder;
+  saveBtn.textContent = translations.saveNameButton;
+  greeting.textContent = translations.greetingText.replace(
+    "{name}",
+    userNameInput
+  );
+  tellStoryBtn.textContent = translations.createPoemButton;
+  finishBtn.textContent = translations.finishSessionButton;
+  tooltipText.innerHTML = translations.tooltipText;
+  prompt.placeholder = translations.promptPlaceholder;
+
+  // Обновляем текст для <label>
+  document.querySelector('label[for="ageGroup"]').textContent =
+    translations.selectAgeGroupLabel;
+  document.querySelector('label[for="poetryForm"]').textContent =
+    translations.selectPoemFormLabel;
+
+  // Обновляем выпадающий список с возрастными группами
+  const ageGroupOptions = document.querySelectorAll("#ageGroup option");
+  const ageGroups = translations.ageGroups;
+  ageGroupOptions.forEach((option) => {
+    const value = option.value;
+    option.textContent = ageGroups[value];
+  });
+
+  // Обновляем выпадающий список с формами стихов
+  const poemFormOptions = document.querySelectorAll("#poetryForm option");
+  const poemForms = translations.poemForms;
+  poemFormOptions.forEach((option) => {
+    const value = option.value;
+    option.textContent = poemForms[value];
+  });
+}
+
+// Функция для обновления алфавита
+function updateAlphabet() {
+  const alphabetGrid = document.querySelector(".alphabet-grid");
+  alphabetGrid.innerHTML = ""; // Очищаем текущие буквы
+  translations.alphabet.forEach((letter) => {
+    const letterDiv = document.createElement("div");
+    letterDiv.classList.add("letter");
+    letterDiv.textContent = letter;
+    alphabetGrid.appendChild(letterDiv);
+
+    // Добавляем обработчики событий для новых букв
+    letterDiv.addEventListener("click", function () {
+      handleLetterSelection(letterDiv);
+    });
+
+    letterDiv.addEventListener("touchstart", function (event) {
+      event.preventDefault(); // Предотвращаем стандартное поведение
+      handleLetterSelection(letterDiv);
+    });
+  });
+}
+
+// Функция для обработки выбора/снятия выделения с буквы
+function handleLetterSelection(letterElement) {
+  const letterValue = letterElement.textContent;
+  if (letterElement.classList.contains("selected")) {
+    letterElement.classList.remove("selected");
+    selectedLetters = selectedLetters.filter((l) => l !== letterValue);
+  } else {
+    letterElement.classList.add("selected");
+    selectedLetters.push(letterValue);
+  }
+}
+
+document
+  .getElementById("languageSelector")
+  .addEventListener("change", (event) => {
+    const selectedLanguage = event.target.value;
+    loadTranslations(selectedLanguage);
+    appLanguage = selectedLanguage;
+    // Store the language in a cookie
+    document.cookie = `appLanguage=${selectedLanguage}; path=/;`;
+
+    // Optionally, if you need to send the language directly to the server
+    // fetch("/api/set-language", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ language: selectedLanguage }),
+    // });
+  });
+
+// Функция для автоматического определения языка и установки значения в селекторе
+function setLanguageSelector(language) {
+  const languageSelector = document.getElementById("languageSelector");
+  languageSelector.value = language; // Устанавливаем значение селектора
+}
+
+// Function to detect the browser's language and return the corresponding language name
+function getBrowserLanguage() {
+  const language = navigator.language || navigator.userLanguage;
+  const languageCode = language.split("-")[0]; // Extract base language code (e.g., 'en' from 'en-US')
+  console.log(`Detected browser language: ${languageCode}`);
+  return languageCode || "en"; // Return the base language code
+}
+
+// Инициализация с выбором языка
+document.addEventListener("DOMContentLoaded", () => {
+  const defaultLanguage = getBrowserLanguage();
+  setLanguageSelector(defaultLanguage);
+  loadTranslations(defaultLanguage);
+  appLanguage = defaultLanguage;
+
+  // Store the language in a cookie
+  document.cookie = `appLanguage=${defaultLanguage}; path=/;`;
+
+  // Optionally, if you need to send the language directly to the server
+  // fetch("/api/set-language", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ language: selectedLanguage }),
+  // });
+});
+
+///////////////////////////////////////////////////////////////////////////////////
 
 // Функция для создания затемнения фона
 const overlayBackground = function () {
@@ -117,37 +278,54 @@ selectedLettersString = selectedLetters.join(", ");
 // Обработчик события для сохранения имени
 saveBtn.addEventListener("click", () => {
   userNameInput = userName.value; // Сохраняем введенное имя пользователя
+  userName.classList.remove("red-border");
 
   if (userNameInput) {
     nameSection.style.display = "none";
     poetrySection.style.display = "flex";
 
     // Обновление приветствия с введенным именем
-    greeting.innerHTML = `Привіт, ${userNameInput},<br>Розкажи свою історію 👂... <br>і я перетворю її на вірш.`;
+    greeting.textContent = translations.greetingText.replace(
+      "{name}",
+      userNameInput
+    );
 
     // Сброс значений формы и селектора
     poetryForm.value = "";
     ageGroupSelect.value = "";
+  } else {
+    userName.classList.add("red-border");
   }
 });
 
 const isEmptySelectorsValues = function () {
   let result = false;
+  storyOutput.innerText = "";
+
+  // Clear the red border before validation
+  poetryForm.classList.remove("red-border");
+  prompt.classList.remove("red-border");
+  ageGroupSelect.classList.remove("red-border");
+  // lettersGrid.forEach((letter) => letter.classList.remove("red-border"));
 
   if (poetryForm.value === "") {
-    storyOutput.innerText = "Будь ласка, оберіть форму вірша.";
+    storyOutput.innerText += translations.noPoemTypeSelected + "\n";
+    poetryForm.classList.add("red-border");
     result = true;
   }
   if (prompt.value === "") {
-    storyOutput.innerText = "Будь ласка, введіть запит.";
+    storyOutput.innerText += translations.noPromptEntered + "\n";
+    prompt.classList.add("red-border");
     result = true;
   }
   if (ageGroupSelect.value === "") {
-    storyOutput.innerText = "Будь ласка, оберіть вікову групу.";
+    storyOutput.innerText += translations.noAgeGroupSelected + "\n";
+    ageGroupSelect.classList.add("red-border");
     result = true;
   }
   if (selectedLetters.length === 0) {
-    storyOutput.innerText = "Будь ласка, оберіть принаймні одну букву.";
+    storyOutput.innerText += translations.noLettersSelected + "\n";
+    // lettersGrid.forEach((letter) => letter.classList.add("red-border"));
     result = true;
   }
   return result;
@@ -163,8 +341,8 @@ const sameSelectorsValues = function () {
     currentAgeGroup === ageGroupSelect.value &&
     selectedLettersString === selectedLetters.join(", ")
   ) {
-    storyOutput.innerText =
-      "Змініть запит або форму вірша для генерації нового вірша.";
+    storyOutput.innerText = "";
+    storyOutput.innerText = translations.sameSelectorsValues;
     result = true;
   }
   return result;
@@ -181,7 +359,8 @@ const isPreviousPoemEmpty = function () {
     currentAgeGroup === "" &&
     selectedLettersString === ""
   ) {
-    storyOutput.innerText = "Будь ласка, спочатку згенеруйте вірш.";
+    storyOutput.innerText = "";
+    storyOutput.innerText = translations.isPreviousPoemEmpty;
     result = true;
   }
   return result;
@@ -198,6 +377,7 @@ tellStoryBtn.addEventListener("click", async () => {
   if (isPreviousPoemEmpty() != true) {
     // Сохраняем предыдущее стихотворение в массив
     poemArray.push({
+      language: appLanguage,
       text: currentPoem,
       style: currentPoemStyleText,
       prompt: currentPrompt,
@@ -212,7 +392,7 @@ tellStoryBtn.addEventListener("click", async () => {
   currentPoemStyleText = poetryForm.selectedOptions[0].textContent;
   currentPrompt = prompt.value;
   if (currentPrompt && currentPoemStyle && storyOutput) {
-    storyOutput.innerText = "Ваш вірш генерується...";
+    storyOutput.innerText = translations.loadingPoem;
 
     try {
       const response = await fetch(`${apiUrl}/api/get-poem`, {
@@ -222,6 +402,7 @@ tellStoryBtn.addEventListener("click", async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          language: appLanguage,
           promptInput: currentPrompt,
           poetryChoice: currentPoemStyle,
           ageGroup: currentAgeGroup,
@@ -261,6 +442,7 @@ finishBtn?.addEventListener("click", async () => {
     currentPoemStyleText !== ""
   ) {
     poemArray.push({
+      language: appLanguage,
       text: currentPoem,
       style: currentPoemStyleText,
       prompt: currentPrompt,
@@ -298,6 +480,7 @@ finishBtn?.addEventListener("click", async () => {
 
       // Генерация URL для страницы с поэмами
       const poemsPageUrl = `${apiUrl}/api/poems/${result._id}`;
+      console.log(poemsPageUrl);
 
       // Запрос на генерацию QR-кода
       const qrCodeResponse = await fetch(
@@ -329,11 +512,11 @@ finishBtn?.addEventListener("click", async () => {
         popup.style.boxSizing = "border-box";
 
         popup.innerHTML = `
-           <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Скануйте цей QR-код, щоб переглянути свої вірші:</h2>
-           <img src="${qrCodeData.qrCode}" alt="QR Code" style="margin-bottom: 1rem;">
-           <p><strong>Або відвідайте цей URL:</strong> <br><br><a href="${poemsPageUrl}" target="_blank" style="color: #007bff; text-decoration: none;">Ваша сторінка з віршами</a></p>
-           <button id="closePopup" style="margin-top: 1rem; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Закрити</button>
-           `;
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">${translations.qrPopupTitle}</h2>
+        <img src="${qrCodeData.qrCode}" alt="QR Code" style="margin-bottom: 1rem;">
+        <p><strong>${translations.qrPopupUrlLabel}</strong> <br><br><a href="${poemsPageUrl}" target="_blank" style="color: #007bff; text-decoration: none;">${translations.poemPageLink}</a></p>
+        <button id="closePopup" style="margin-top: 1rem; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">${translations.qrPopupButton}</button>
+      `;
 
         // Добавляем обработчик для закрытия всплывающего окна
         document.body.appendChild(popup);

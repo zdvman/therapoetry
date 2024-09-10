@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from "webpack";
 import dotenv from "dotenv";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
 // Определяем __dirname для ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -26,6 +27,11 @@ export default {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.json$/,
+        type: "javascript/auto",
+        use: ["json-loader"], // Для загрузки JSON-файлов
+      },
     ],
   },
   resolve: {
@@ -44,6 +50,11 @@ export default {
     new webpack.DefinePlugin({
       "process.env.API_URL": JSON.stringify(process.env.API_URL),
       "process.env.MONGO_URI": JSON.stringify(process.env.MONGO_URI),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: "src/translations", to: "translations" }, // Копируем файлы переводов
+      ],
     }),
   ],
   devServer: {
