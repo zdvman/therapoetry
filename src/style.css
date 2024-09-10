@@ -7,15 +7,11 @@ body {
 
 body {
   font-family: "Arial", sans-serif;
-  background: url("azoras-wpp.jpg") no-repeat center center fixed; /* Fixed background */
-  background-size: cover; /* Ensures the background covers the entire screen */
-  background-blend-mode: darken; /* Applies a blend to make the background less dominant */
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.5
-  ); /* Adds a semi-transparent black overlay to mute the image */
+  background-color: rgba(0, 76, 101, 0.5);
+  /* background: url("azoras-wpp.jpg") no-repeat center center fixed; Fixed background */
+  /* background-size: cover; Ensures the background covers the entire screen */
+  /* background-blend-mode: darken; Applies a blend to make the background less dominant */
+  /* background-color: rgba(34, 170, 127, 0.141); Adds a semi-transparent overlay to mute the image */
   margin: 0;
   display: flex;
   flex-direction: column;
