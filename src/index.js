@@ -268,6 +268,7 @@ lettersGrid.forEach((letter) => {
   // Используем touchstart для сенсорных устройств
   letter.addEventListener("touchstart", function (event) {
     event.preventDefault(); // Предотвращаем стандартное поведение
+    alphabet.classList.remove("red-border");
     handleLetterSelection(this);
   });
 
