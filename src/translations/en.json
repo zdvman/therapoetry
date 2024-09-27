@@ -1,4 +1,5 @@
 {
+  "languageCode": "en",
   "appTitle": "Poetry Therapy",
   "namePlaceholder": "Enter student name",
   "saveNameButton": "Save Name",
@@ -66,7 +67,6 @@
   "qrPopupUrlLabel": "Or visit this URL:",
   "poemPageLink": "View Poems",
   "qrPopupButton": "Close",
-  "languageCode": "en",
   "poemsFor": "Poems for",
   "poemStyle": "Style",
   "ageGroup": "Age Group",

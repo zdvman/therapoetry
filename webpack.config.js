@@ -1,6 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+// import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from "webpack";
 import dotenv from "dotenv";
 import CopyWebpackPlugin from "copy-webpack-plugin";
@@ -43,16 +43,20 @@ export default {
     publicPath: "/",
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html",
-      filename: "index.html",
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: "./src/index.html",
+    //   filename: "index.html",
+    // }),
     new webpack.DefinePlugin({
       "process.env.API_URL": JSON.stringify(process.env.API_URL),
       "process.env.MONGO_URI": JSON.stringify(process.env.MONGO_URI),
     }),
     new CopyWebpackPlugin({
       patterns: [
+        // Копируем файлы EJS в dist
+        { from: "src/views", to: "views" }, // Копируем EJS шаблоны
+        { from: "src/client/style.css", to: "styles/style.css" }, // Копируем основной CSS
+        { from: "src/public/style-poems.css", to: "styles/style-poems.css" }, // Копируем стили для poems.ejs
         { from: "src/translations", to: "translations" }, // Копируем файлы переводов
       ],
     }),

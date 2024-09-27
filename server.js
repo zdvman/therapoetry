@@ -1,5 +1,6 @@
 // server.js
 
+import fs from "fs";
 import express from "express"; // Импортируем Express
 import cors from "cors"; // Импортируем CORS middleware
 import mongoose from "mongoose"; // Импортируем Mongoose
@@ -39,6 +40,94 @@ app.use(express.json()); // Включаем JSON-парсинг для вход
 
 // Use cookie parser middleware
 app.use(cookieParser());
+
+// Функция для определения доступных языков на основе файлов в папке translations
+function getAvailableLanguages() {
+  const translationDir = path.join(__dirname, "src/translations");
+  const files = fs.readdirSync(translationDir);
+
+  // Файлы переводов имеют формат 'en.json', 'uk.json', и т.д.
+  return files
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => ({
+      code: file.replace(".json", ""), // Языковой код
+      name: getLanguageName(file.replace(".json", "")), // Название языка
+    }));
+}
+
+// Функция для получения отображаемого имени языка по коду
+function getLanguageName(code) {
+  const languages = {
+    en: "English",
+    uk: "Українська",
+    ru: "Русский",
+    es: "Español",
+    pt: "Português",
+    de: "Deutsch",
+    fr: "Français",
+    it: "Italiano",
+    pl: "Polski",
+    hi: "हिन्दी",
+    tr: "Türkçe",
+    // Добавьте другие языки здесь
+  };
+  return languages[code] || "Unknown";
+}
+
+// Маршрут для рендеринга главной страницы
+app.get("/", async (req, res) => {
+  // Читаем куки для языка
+  const cookieLanguage = req.cookies.appLanguage;
+  const browserLanguage =
+    req.acceptsLanguages([
+      "en",
+      "uk",
+      "ru",
+      "es",
+      "pt",
+      "de",
+      "fr",
+      "it",
+      "pl",
+      "hi",
+      "tr",
+    ]) || "en"; // Допускаем английский по умолчанию
+
+  // Если куки с языком нет, используем язык браузера или по умолчанию — английский
+  let selectedLanguage =
+    cookieLanguage || browserLanguage.split("-")[0] || "en";
+
+  // Проверяем, есть ли у нас словарь для этого языка
+  const availableLanguages = getAvailableLanguages();
+  const languageCodes = availableLanguages.map((lang) => lang.code);
+
+  if (!languageCodes.includes(selectedLanguage)) {
+    selectedLanguage = "en"; // Если языка нет, устанавливаем по умолчанию английский
+  }
+
+  // Сохраняем язык в куки, если он ещё не установлен
+  if (!cookieLanguage) {
+    res.cookie("appLanguage", selectedLanguage, {
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+    }); // Куки на 1 год
+  }
+
+  // Загружаем переводы для выбранного языка
+  const translations = await import(
+    `./src/translations/${selectedLanguage}.json`,
+    {
+      assert: { type: "json" },
+    }
+  ).then((module) => module.default);
+
+  // Рендерим страницу с доступными языками и переводами
+  res.render("index", {
+    translations,
+    availableLanguages,
+    selectedLanguage,
+  });
+});
 
 // Middleware to set the selected language based on the cookie
 app.use((req, res, next) => {
@@ -194,13 +283,6 @@ const appLanguage = function (language) {
       return "English";
   }
 };
-
-// Example: Route for setting language via POST request
-// app.post("/api/set-language", (req, res) => {
-//   const { language } = req.body;
-//   res.cookie("appLanguage", language, { path: "/", maxAge: 900000 }); // Set the language in a cookie
-//   res.status(200).json({ message: "Language updated" });
-// });
 
 app.post(`/api/get-poem`, async (req, res) => {
   const { language, promptInput, poetryChoice, letters, ageGroup } = req.body;

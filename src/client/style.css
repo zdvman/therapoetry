@@ -164,6 +164,20 @@ h1 {
   gap: 10px;
 }
 
+.poetry-form-row {
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; /* Равномерное распределение по ширине */
+  gap: 10px;
+}
+
+.poetry-form-row label,
+.poetry-form-row select {
+  flex: 1; /* Каждый элемент займет равную ширину */
+}
+
 /* Poetry Form Container */
 .poetry-form-container {
   display: flex;

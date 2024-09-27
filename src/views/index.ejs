@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="<%= translations.languageCode %>">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title><%= translations.appTitle %></title>
+	<link rel="stylesheet" href="/styles/style.css" />
+	<!-- Подключение стилей -->
+</head>
+<body>
+	<div id="chatContainer">
+	<div id="headerSection">
+		<!-- Селектор для выбора языка (динамически сгенерирован на основе доступных переводов) -->
+		<div id="languageSwitch">
+			<select id="languageSelector">
+			<% availableLanguages.forEach(function(lang) { %>
+				<option value="<%= lang.code %>" <%= lang.code === selectedLanguage ? 'selected' : '' %>><%= lang.name %></option>
+			<% }); %>
+			</select>
+		</div>
+
+		<!-- Заголовок приложения -->
+		<h1 id="appTitle"><%= translations.appTitle %></h1>
+	</div>
+
+	<!-- Секция имени -->
+	<div id="nameSection">
+		<input
+		type="text"
+		id="userName"
+		placeholder="<%= translations.namePlaceholder %>"
+		/>
+		<button id="saveBtn"><%= translations.saveNameButton %></button>
+	</div>
+
+	<!-- Основная секция -->
+	<div id="poetrySection" style="display: none">
+		<!-- Приветствие будет подставлено через JavaScript -->
+		<h2 id="greeting"></h2>
+
+		<!-- Форма выбора возрастной группы и формы стихотворения -->
+		<div class="poetry-form-row">
+		<label for="ageGroup"><%= translations.selectAgeGroupLabel %>:</label>
+		<select id="ageGroup">
+			<% for (let key in translations.ageGroups) { %>
+			<option value="<%= key %>">
+			<%= translations.ageGroups[key] %>
+			</option>
+			<% } %>
+		</select>
+
+		<label for="poetryForm"
+			><%= translations.selectPoemFormLabel %>:</label
+		>
+		<select id="poetryForm">
+			<% for (let key in translations.poemForms) { %>
+			<option value="<%= key %>">
+			<%= translations.poemForms[key] %>
+			</option>
+			<% } %>
+		</select>
+		
+			<!-- Подсказка для форм -->
+			<span class="tooltip">
+				?
+				<div class="tooltiptext"><%- translations.tooltipText %></div>
+			</span>
+		</div>
+
+		<!-- Алфавит -->
+		<div class="alphabet-grid">
+		<% translations.alphabet.forEach(function(letter) { %>
+		<div class="letter"><%= letter %></div>
+		<% }); %>
+		</div>
+
+		<!-- Поле для ввода запроса и генерация стихотворения -->
+		<div class="poetry-form-container">
+		<input
+			type="text"
+			id="prompt"
+			placeholder="<%= translations.promptPlaceholder %>"
+		/>
+		<button id="tellStory"><%= translations.createPoemButton %></button>
+		<p id="storyOutput"></p>
+		<button id="finishBtn">
+			<%= translations.finishSessionButton %>
+		</button>
+		</div>
+	</div>
+	</div>
+
+	<script src="/bundle.js"></script>
+	<!-- Подключение JS -->
+</body>
+</html>

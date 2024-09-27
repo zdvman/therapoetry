@@ -1,15 +1,39 @@
-import { set } from "mongoose";
-import "./style.css"; // Подключаем стили
-// import QRCode from "qrcode";
+// index.js - основной файл клиентской части приложения
+// Он отвечает за взаимодействие с пользователем и отправку запросов на сервер
+
+import "./client/style.css"; // Подключаем стили
 
 // Определяем URL API
 const apiUrl = process.env.API_URL || "http://localhost:3000";
 console.log(apiUrl);
 
+// Функция для получения куки
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
+
+// Функция для установки куки
+function setCookie(name, value, days) {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = `${name}=${value || ""}${expires}; path=/`;
+}
+
+let appLanguage = getCookie("appLanguage") || "en"; // Если куки нет, по умолчанию 'en'
+
+console.log("Current language:", appLanguage);
+
 let translations = {}; // Объект для хранения переводов
-let appLanguage = "en"; // Язык приложения по умолчанию "en"
 let userNameInput = ""; // Переменная для хранения имени пользователя
 let currentAgeGroup = ""; // Переменная для хранения текущей возрастной группы
+let currentAgeGroupText = ""; // Переменная для хранения текста текущей возрастной группы
 let currentPrompt = ""; // Переменная для хранения текущего промпта
 let currentPoem = ""; // Переменная для хранения текущего стихотворения
 let currentPoemStyleText = ""; // Переменная для хранения текста текущего стиля стихотворения
@@ -26,13 +50,35 @@ const saveBtn = document.getElementById("saveBtn");
 const poetrySection = document.getElementById("poetrySection");
 const greeting = document.getElementById("greeting");
 const ageGroupSelect = document.getElementById("ageGroup");
-const lettersGrid = document.querySelectorAll(".alphabet-grid .letter");
 const poetryForm = document.getElementById("poetryForm");
+const lettersGrid = document.querySelectorAll(".alphabet-grid .letter");
+const alphabet = document.querySelector(".alphabet-grid");
 const prompt = document.getElementById("prompt");
 const storyOutput = document.getElementById("storyOutput");
 const tellStoryBtn = document.getElementById("tellStory");
 const finishBtn = document.getElementById("finishBtn");
 const tooltipText = document.querySelector(".tooltiptext");
+
+// Инициализация с выбором языка
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadTranslations(appLanguage);
+});
+
+// Listen for the change event on the language selector
+document
+  .getElementById("languageSelector")
+  .addEventListener("change", async (event) => {
+    const selectedLanguage = event.target.value;
+    await loadTranslations(selectedLanguage);
+    appLanguage = selectedLanguage;
+
+    // Store the language in a cookie
+    setCookie("appLanguage", selectedLanguage, 365); // Сохраняем язык в куки на 1 год
+
+    // Update the text content based on the translation
+    updateTextContent();
+    updateAlphabet();
+  });
 
 // Function to load translations
 async function loadTranslations(language) {
@@ -50,10 +96,6 @@ async function loadTranslations(language) {
     translations = await response.json();
 
     console.log("translations:", translations);
-
-    // Update the text content based on the translation
-    updateTextContent();
-    updateAlphabet();
   } catch (error) {
     // Log the error to the console for easier debugging
     console.error("Error while loading translations:", error);
@@ -104,13 +146,12 @@ function updateTextContent() {
 
 // Функция для обновления алфавита
 function updateAlphabet() {
-  const alphabetGrid = document.querySelector(".alphabet-grid");
-  alphabetGrid.innerHTML = ""; // Очищаем текущие буквы
+  alphabet.innerHTML = ""; // Очищаем текущие буквы
   translations.alphabet.forEach((letter) => {
     const letterDiv = document.createElement("div");
     letterDiv.classList.add("letter");
     letterDiv.textContent = letter;
-    alphabetGrid.appendChild(letterDiv);
+    alphabet.appendChild(letterDiv);
 
     // Добавляем обработчики событий для новых букв
     letterDiv.addEventListener("click", function () {
@@ -127,6 +168,7 @@ function updateAlphabet() {
 // Функция для обработки выбора/снятия выделения с буквы
 function handleLetterSelection(letterElement) {
   const letterValue = letterElement.textContent;
+
   if (letterElement.classList.contains("selected")) {
     letterElement.classList.remove("selected");
     selectedLetters = selectedLetters.filter((l) => l !== letterValue);
@@ -134,59 +176,35 @@ function handleLetterSelection(letterElement) {
     letterElement.classList.add("selected");
     selectedLetters.push(letterValue);
   }
+
+  // Убираем красную рамку у всех букв, если выбрана хотя бы одна
+  if (selectedLetters.length > 0) {
+    alphabet.classList.remove("red-border");
+  }
 }
 
-document
-  .getElementById("languageSelector")
-  .addEventListener("change", (event) => {
-    const selectedLanguage = event.target.value;
-    loadTranslations(selectedLanguage);
-    appLanguage = selectedLanguage;
-    // Store the language in a cookie
-    document.cookie = `appLanguage=${selectedLanguage}; path=/;`;
+ageGroupSelect.addEventListener("change", () => {
+  if (ageGroupSelect.value) {
+    ageGroupSelect.classList.remove("red-border");
+  }
+});
 
-    // Optionally, if you need to send the language directly to the server
-    // fetch("/api/set-language", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ language: selectedLanguage }),
-    // });
-  });
+poetryForm.addEventListener("change", () => {
+  if (poetryForm.value) {
+    poetryForm.classList.remove("red-border");
+  }
+});
 
-// Функция для автоматического определения языка и установки значения в селекторе
-function setLanguageSelector(language) {
-  const languageSelector = document.getElementById("languageSelector");
-  languageSelector.value = language; // Устанавливаем значение селектора
-}
+prompt.addEventListener("input", () => {
+  if (prompt.value) {
+    prompt.classList.remove("red-border");
+  }
+});
 
-// Function to detect the browser's language and return the corresponding language name
-function getBrowserLanguage() {
-  const language = navigator.language || navigator.userLanguage;
-  const languageCode = language.split("-")[0]; // Extract base language code (e.g., 'en' from 'en-US')
-  console.log(`Detected browser language: ${languageCode}`);
-  return languageCode || "en"; // Return the base language code
-}
-
-// Инициализация с выбором языка
-document.addEventListener("DOMContentLoaded", () => {
-  const defaultLanguage = getBrowserLanguage();
-  setLanguageSelector(defaultLanguage);
-  loadTranslations(defaultLanguage);
-  appLanguage = defaultLanguage;
-
-  // Store the language in a cookie
-  document.cookie = `appLanguage=${defaultLanguage}; path=/;`;
-
-  // Optionally, if you need to send the language directly to the server
-  // fetch("/api/set-language", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({ language: selectedLanguage }),
-  // });
+userName.addEventListener("input", () => {
+  if (userName.value) {
+    userName.classList.remove("red-border");
+  }
 });
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +273,7 @@ lettersGrid.forEach((letter) => {
 
   // Также оставляем обработку для click на десктопе
   letter.addEventListener("click", function () {
+    alphabet.classList.remove("red-border");
     handleLetterSelection(this);
   });
 
@@ -306,7 +325,7 @@ const isEmptySelectorsValues = function () {
   poetryForm.classList.remove("red-border");
   prompt.classList.remove("red-border");
   ageGroupSelect.classList.remove("red-border");
-  // lettersGrid.forEach((letter) => letter.classList.remove("red-border"));
+  alphabet.classList.remove("red-border");
 
   if (poetryForm.value === "") {
     storyOutput.innerText += translations.noPoemTypeSelected + "\n";
@@ -325,7 +344,7 @@ const isEmptySelectorsValues = function () {
   }
   if (selectedLetters.length === 0) {
     storyOutput.innerText += translations.noLettersSelected + "\n";
-    // lettersGrid.forEach((letter) => letter.classList.add("red-border"));
+    alphabet.classList.add("red-border");
     result = true;
   }
   return result;
@@ -382,11 +401,12 @@ tellStoryBtn.addEventListener("click", async () => {
       style: currentPoemStyleText,
       prompt: currentPrompt,
       letters: selectedLettersString,
-      ageGroup: currentAgeGroup,
+      ageGroup: currentAgeGroupText,
     });
     currentPoem = "";
   }
   currentAgeGroup = ageGroupSelect.value;
+  currentAgeGroupText = ageGroupSelect.selectedOptions[0].textContent;
   selectedLettersString = selectedLetters?.join(", ");
   currentPoemStyle = poetryForm.value;
   currentPoemStyleText = poetryForm.selectedOptions[0].textContent;
@@ -447,7 +467,7 @@ finishBtn?.addEventListener("click", async () => {
       style: currentPoemStyleText,
       prompt: currentPrompt,
       letters: selectedLettersString,
-      ageGroup: currentAgeGroup,
+      ageGroup: currentAgeGroupText,
     });
     currentPoem = "";
     currentPoemStyle = "";
