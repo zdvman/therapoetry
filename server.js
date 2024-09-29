@@ -69,6 +69,10 @@ function getLanguageName(code) {
     pl: "Polski",
     hi: "हिन्दी",
     tr: "Türkçe",
+    sk: "Slovenčina",
+    cs: "Čeština",
+    hu: "Magyar",
+    ro: "Română",
     // Добавьте другие языки здесь
   };
   return languages[code] || "Unknown";
