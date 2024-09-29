@@ -58,6 +58,7 @@ export default {
         { from: "src/client/style.css", to: "styles/style.css" }, // Копируем основной CSS
         { from: "src/public/style-poems.css", to: "styles/style-poems.css" }, // Копируем стили для poems.ejs
         { from: "src/translations", to: "translations" }, // Копируем файлы переводов
+        { from: "src/public/images/favicon.ico", to: "images/favicon.ico" }, // Копируем favicon
       ],
     }),
   ],
