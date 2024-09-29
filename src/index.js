@@ -109,6 +109,7 @@ async function loadTranslations(language) {
 
 // Функция для обновления текстового контента
 function updateTextContent() {
+  document.title = translations.appTitle;
   appTitle.textContent = translations.appTitle;
   userName.placeholder = translations.namePlaceholder;
   saveBtn.textContent = translations.saveNameButton;
