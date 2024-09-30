@@ -75,6 +75,7 @@ document
     // Store the language in a cookie
     setCookie("appLanguage", selectedLanguage, 365); // Сохраняем язык в куки на 1 год
 
+    selectedLetters = []; // Очищаем массив выбранных букв
     // Update the text content based on the translation
     updateTextContent();
     updateAlphabet();
