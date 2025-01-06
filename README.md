@@ -1,6 +1,6 @@
 # Therapoetry
 
-Therapoetry is an AI-powered application designed for speech therapists to help children with speech difficulties through the use of therapeutic poems. By combining user-selected letters, poetry styles, and prompts, Therapoetry generates engaging and educational poems tailored to children’s specific speech therapy needs.
+Therapoetry is an AI-powered application designed for speech therapists to assist individuals with speech difficulties through the use of therapeutic poems. By combining user-selected letters, poetry styles, and prompts, Therapoetry generates engaging and educational poems tailored to specific speech therapy needs.
 
 ## Features
 
@@ -25,16 +25,19 @@ Therapoetry is an AI-powered application designed for speech therapists to help 
    - Ensures content appropriateness and complexity for effective therapy.
 
 ### 3. **Language Localization**
-   - Multilingual interface with support for:
-     - English, Українська, Русский, and more.
-   - Cookie-based language persistence for seamless user experience.
+   - Multilingual interface with support for numerous languages, including:
+     - English
+     - Українська (Ukrainian)
+     - Русский (Russian)
+     - [Additional languages as per the translation files]
+   - Cookie-based language persistence for a seamless user experience.
    - Easy expansion by uploading translation files to the server.
 
 ### 4. **AI-Driven Poem Creation**
    - Leverages Claude AI to:
      - Generate personalized poems based on user input.
      - Focus on specific sounds and letters for pronunciation improvement.
-     - Provide short descriptions explaining therapeutic benefits of each poem.
+     - Provide short descriptions explaining the therapeutic benefits of each poem.
 
 ### 5. **Interactive Input**
    - Users can select letters and provide prompts for more targeted poem generation.
@@ -45,16 +48,18 @@ Therapoetry is an AI-powered application designed for speech therapists to help 
 
 ### 7. **Server-Side Rendering**
    - Renders language-specific interfaces dynamically using EJS (Embedded JavaScript).
-   - Provides localized API responses for consistent user experience.
+   - Provides localized API responses for a consistent user experience.
 
 ### 8. **Modern Frontend Technologies**
    - Built using Webpack for bundling and development.
-   - CSS and style loaders for dynamic and responsive styling.
+   - Utilizes CSS and style loaders for dynamic and responsive styling.
+   - Implements Babel for JavaScript transpilation, ensuring compatibility across different browsers.
 
 ### 9. **Backend with Advanced Features**
    - Powered by Node.js and Express.js.
    - MongoDB and Mongoose for robust database management.
    - Supports scheduled tasks with Node-Cron for maintaining application states.
+   - Environment variable management using dotenv for secure configuration.
 
 ## How It Works
 
@@ -80,33 +85,41 @@ Therapoetry is an AI-powered application designed for speech therapists to help 
 - **Server-Side Rendering**: Utilizes EJS for dynamic rendering and localization.
 - **Database**: Uses MongoDB and Mongoose for data storage and management.
 - **Task Scheduling**: Employs Node-Cron for scheduled tasks like data cleanup or updates.
+- **Environment Management**: Manages configuration using dotenv for secure environment variables.
 
 ### Frontend
 - **Dynamic Localization**: Automatically loads the appropriate language dictionary for rendering.
 - **Interactive Design**: User-friendly input methods and real-time feedback for selections.
-- **Modern Build Tools**: Leverages Webpack, CSS Loader, and Style Loader for an efficient development and deployment workflow.
+- **Modern Build Tools**: Leverages Webpack, CSS Loader, Style Loader, and Babel for an efficient development and deployment workflow.
+- **Code Quality**: Ensures code reliability with Jest for testing and ESLint for linting.
 
 ## Installation and Setup
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/therapoetry.git
+   git clone https://github.com/zdvman/therapoetry.git
    cd therapoetry
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. **Set up environment variables:**
+   - Create a `.env` file in the root directory.
+   - Add necessary environment variables as specified in `.env.example`.
+
+4. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-4. Access the application at `http://localhost:3000`.
+5. **Access the application:**
+   - Open your browser and navigate to `http://localhost:3000`.
 
-5. To enable multilingual support, upload translation files to the `translations` directory.
+6. **Enable multilingual support:**
+   - Upload translation files to the `translations` directory as needed.
 
 ## Example Poem
 
@@ -117,17 +130,17 @@ Therapoetry is an AI-powered application designed for speech therapists to help 
 - **Prompt**: "Hello my friend and welcome"
 
 ### Output:
-```text
-Little Molly met Liam one day,  
-"Hello, my friend!" she'd warmly say.  
-"Welcome to my home,  
-Where we'll laugh and roam,  
+```
+Little Molly met Liam one day,
+"Hello, my friend!" she'd warmly say.
+"Welcome to my home,
+Where we'll laugh and roam,
 Let's make merry and play all day!"
 
-Liam smiled and said with glee,  
-"Lovely Molly, thanks for having me!  
-We'll make memories grand,  
-In this magical land,  
+Liam smiled and said with glee,
+"Lovely Molly, thanks for having me!
+We'll make memories grand,
+In this magical land,
 Where laughter and joy run free!"
 ```
 
@@ -141,4 +154,5 @@ We welcome contributions! Feel free to fork the repository, submit a pull reques
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+```
 
