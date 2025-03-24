@@ -154,11 +154,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "src/views"));
 app.set("view engine", "ejs");
 
-console.log("MONGO_URI:", process.env.MONGO_URI); // Логируем MongoDB URI
-console.log("ANTHROPIC_API_KEY:", process.env.ANTHROPIC_API_KEY); // Логируем API-ключ Anthropic
-console.log("PORT:", process.env.PORT); // Логируем порт
-console.log("API_URL:", process.env.API_URL); // Логируем API URL (по умолчанию http://localhost:3000)
-
 // Используем MONGO_URI из .env файла
 const mongoUri = process.env.MONGO_URI;
 // Используем ANTHROPIC_API_KEY из .env файла
@@ -418,11 +413,6 @@ app.get(`/api/generate-qr/:id`, async (req, res) => {
 app.use(`/api/healthcheck`, (req, res) => {
   res.status(200).send("Server is running");
 });
-
-// This should be the last route, to serve the frontend for any unmatched routes
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "dist", "index.html"));
-// });
 
 const port = process.env.PORT || 3000; // Устанавливаем порт из переменной окружения PORT или 3000 по умолчанию
 app.listen(port, () => {
